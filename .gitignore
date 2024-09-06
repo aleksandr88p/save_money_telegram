@@ -2,3 +2,4 @@ venv
 things.txt
 .env
 .idea
+__pycache__
