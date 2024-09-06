@@ -3,11 +3,13 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from bot.config import Config
-from core.handlers import basic, callback
+from core.handlers import basic, callback, audio_handler, confirm_handler, submit_handler
 from aiogram.utils.chat_action import ChatActionMiddleware
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.filters import Command
+from aiogram import F
+from core.states import AudioState, TextState
 
 import contextvars
 
@@ -44,10 +46,18 @@ async def start():
     # Регистрация команд
     dp.message.register(basic.send_welcome, Command(commands=['start', 'run']))
     dp.message.register(basic.get_help, Command(commands=['help']))
+    dp.message.register(audio_handler.audio_command, Command(commands=["audio"]))
+    dp.message.register(audio_handler.handle_voice, F.content_type == 'voice', AudioState.waiting_for_audio_expenses)
+    dp.message.register(submit_handler.handle_submit_command, Command(commands=['submit']))
+    dp.message.register(submit_handler.handle_text_submission, TextState.waiting_for_text)
 
     # Регистрация callback для переключения языка
     dp.callback_query.register(callback.switch_to_russian, lambda c: c.data == 'switch_to_russian')
     dp.callback_query.register(callback.switch_to_english, lambda c: c.data == 'switch_to_english')
+
+    # Регистрация обработчиков для кнопок "Да" и "Нет"
+    dp.callback_query.register(confirm_handler.handle_confirm_yes, F.data == "confirm_yes")
+    dp.callback_query.register(confirm_handler.handle_confirm_no, F.data == "confirm_no")
 
     try:
         await dp.start_polling(bot, skip_updates=True)

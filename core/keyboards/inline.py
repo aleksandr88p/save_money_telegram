@@ -17,3 +17,18 @@ def get_english_keyboard():
         [InlineKeyboardButton(text="Switch to Russian", callback_data="switch_to_russian")]
     ])
     return keyboard
+
+
+
+# Клавиатура для подтверждения текста
+def get_confirm_keyboard(language):
+    if language == 'english':
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Yes", callback_data="confirm_yes")],
+            [InlineKeyboardButton(text="No", callback_data="confirm_no")]
+        ])
+    else:
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Да", callback_data="confirm_yes")],
+            [InlineKeyboardButton(text="Нет", callback_data="confirm_no")]
+        ])
