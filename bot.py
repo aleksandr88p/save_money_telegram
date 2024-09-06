@@ -3,7 +3,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from bot.config import Config
-from core.handlers import basic
+from core.handlers import basic, callback
 from aiogram.utils.chat_action import ChatActionMiddleware
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.bot import DefaultBotProperties
@@ -44,6 +44,10 @@ async def start():
     # Регистрация команд
     dp.message.register(basic.send_welcome, Command(commands=['start', 'run']))
     dp.message.register(basic.get_help, Command(commands=['help']))
+
+    # Регистрация callback для переключения языка
+    dp.callback_query.register(callback.switch_to_russian, lambda c: c.data == 'switch_to_russian')
+    dp.callback_query.register(callback.switch_to_english, lambda c: c.data == 'switch_to_english')
 
     try:
         await dp.start_polling(bot, skip_updates=True)
