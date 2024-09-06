@@ -3,13 +3,13 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from bot.config import Config
-from core.handlers import basic, callback, audio_handler, confirm_handler, submit_handler
+from core.handlers import basic, callback, audio_handler, confirm_handler, submit_handler, query_handler
 from aiogram.utils.chat_action import ChatActionMiddleware
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.filters import Command
 from aiogram import F
-from core.states import AudioState, TextState
+from core.states import AudioState, TextState, QueryState
 
 import contextvars
 
@@ -50,6 +50,8 @@ async def start():
     dp.message.register(audio_handler.handle_voice, F.content_type == 'voice', AudioState.waiting_for_audio_expenses)
     dp.message.register(submit_handler.handle_submit_command, Command(commands=['submit']))
     dp.message.register(submit_handler.handle_text_submission, TextState.waiting_for_text)
+    dp.message.register(query_handler.handle_query_command, Command(commands=['query']))
+    dp.message.register(query_handler.handle_query_submission, QueryState.waiting_for_query)
 
     # Регистрация callback для переключения языка
     dp.callback_query.register(callback.switch_to_russian, lambda c: c.data == 'switch_to_russian')
