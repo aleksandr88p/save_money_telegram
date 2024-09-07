@@ -57,6 +57,10 @@ async def start():
     dp.callback_query.register(callback.switch_to_russian, lambda c: c.data == 'switch_to_russian')
     dp.callback_query.register(callback.switch_to_english, lambda c: c.data == 'switch_to_english')
 
+    dp.callback_query.register(callback.send_text_callback, lambda c: c.data == 'send_text')
+    dp.callback_query.register(callback.send_audio_callback, lambda c: c.data == 'send_audio')
+    dp.callback_query.register(callback.query_expenses_callback, lambda c: c.data == 'query_expenses')
+
     # Регистрация обработчиков для кнопок "Да" и "Нет"
     dp.callback_query.register(confirm_handler.handle_confirm_yes, F.data == "confirm_yes")
     dp.callback_query.register(confirm_handler.handle_confirm_no, F.data == "confirm_no")
