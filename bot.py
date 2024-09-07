@@ -53,6 +53,9 @@ async def start():
     dp.message.register(query_handler.handle_query_command, Command(commands=['query']))
     dp.message.register(query_handler.handle_query_submission, QueryState.waiting_for_query)
 
+    dp.message.register(basic.get_help, F.text == "Help")
+    dp.message.register(basic.show_keyboard, F.text == "Show Keyboard")
+
     # Регистрация callback для переключения языка
     dp.callback_query.register(callback.switch_to_russian, lambda c: c.data == 'switch_to_russian')
     dp.callback_query.register(callback.switch_to_english, lambda c: c.data == 'switch_to_english')
